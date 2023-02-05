@@ -1,13 +1,13 @@
+package com.warships.nodes;
+
+import com.warships.constants.WarshipConstants;
+
 public class TechNode {
 
     public static final int NODE_WIDTH = 31;
 
     public static String emptyNodeString() {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < TechNode.NODE_WIDTH+3; i++) {
-            builder.append(WarshipConstants.BLANK_SPACE);
-        }
-        return builder.toString();
+        return WarshipConstants.BLANK_SPACE.repeat(TechNode.NODE_WIDTH + 3);
     }
 
     private String name;
@@ -127,11 +127,8 @@ public class TechNode {
             appendUnlock(builder, this.name, this.unlockCost);
         } else if (!isUnlocked) {
             appendLock(builder, this.name);
-        } else if (this instanceof UpgradeNode) {
+        } else if (this instanceof UpgradeNode node) {
             appendName(builder, this.name);
-
-            // Display as upgrade node
-            UpgradeNode node = ((UpgradeNode) this);
             int level = node.getLevel();
 
             appendLevelInfo(builder, level);

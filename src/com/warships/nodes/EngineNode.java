@@ -1,3 +1,7 @@
+package com.warships.nodes;
+
+import com.warships.constants.WarshipConstants;
+
 public class EngineNode extends TechNode {
 
     private int techLevelRequired;
