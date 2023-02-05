@@ -1,3 +1,7 @@
+package com.warships.loaders;
+
+import com.warships.nodes.UpgradeNode;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -121,7 +125,7 @@ public class PresetLoader {
         if (!this.loadedNodes.contains(name)) {
             this.loadedNodes.add(name);
         } else {
-            throw new IllegalArgumentException("Duplicate node: " + name);
+            throw new IllegalArgumentException(this.fileLocation + " contains duplicate node: " + name);
         }
     }
 

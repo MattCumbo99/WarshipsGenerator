@@ -1,3 +1,5 @@
+package com.warships.constants;
+
 public final class WarshipConstants {
 
     public static final int ENGINE_ONE_UNLOCK_COST = 36;
