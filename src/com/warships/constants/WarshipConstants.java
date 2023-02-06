@@ -10,12 +10,14 @@ public final class WarshipConstants {
 
     public static final String PRESET_FILENAME = "PresetNodes.txt";
 
-    public static final int NODE_NAME_MIN_WIDTH = 15;
+    public static final int NODE_NAME_MIN_WIDTH = 20;
 
     public static final String NODE_BLANK = "━";
     public static final String NODE_LOCK = "[Locked]";
     public static final String NODE_UPGRADE_ICON = "↑";
     public static final String NODE_UNLOCK = "«Unlock:%s »";
+
+    public static final String NODE_CHOICE = "*CHOICE*";
 
     public static final String BLANK_SPACE = " ";
 

@@ -4,7 +4,6 @@ import com.warships.nodes.UpgradeNode;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Map;
@@ -19,11 +18,13 @@ public class PresetLoader {
     private String fileLocation;
     private Map<String, UpgradeNode> presetNodes;
     private List<String> loadedNodes;
+    private int initialSize;
 
     public PresetLoader(String fileLocation) {
         this.presetNodes = new HashMap<>();
         this.loadedNodes = new ArrayList<>();
         this.fileLocation = fileLocation;
+        this.initialSize = 0;
 
         generateNodes();
     }
@@ -32,13 +33,8 @@ public class PresetLoader {
         this(file.getPath());
     }
 
-    /**
-     * Gets a list of every node present.
-     *
-     * @return list of strings containing node names.
-     */
-    public List<String> availableNodes() {
-        return Collections.unmodifiableList(this.loadedNodes);
+    public int getInitialSize() {
+        return initialSize;
     }
 
     /**
@@ -61,39 +57,13 @@ public class PresetLoader {
     }
 
     /**
-     * Gets the specified upgrade node.
-     *
-     * @param name Name of the upgrade node.
-     * @return upgrade node data.
-     */
-    public UpgradeNode peekNode(String name) {
-        return this.presetNodes.get(name);
-    }
-
-    /**
      * Gets and removes the specified upgrade node.
      *
      * @param name Name of the upgrade node.
      * @return the removed node.
      */
     public UpgradeNode unloadNode(String name) {
-        if (this.loadedNodes.remove(name)) {
-            return this.presetNodes.remove(name);
-        } else {
-            throw new IllegalArgumentException("Node does not exist: " + name);
-        }
-    }
-
-    /**
-     * Gets and removes a random node.
-     *
-     * @return the removed node.
-     */
-    public UpgradeNode unloadRandomNode() {
-        int max = this.presetNodes.size();
-        int randomIndex = (int) Math.floor(Math.random() * (max - 1));
-
-        return this.presetNodes.remove(this.loadedNodes.remove(randomIndex));
+        return this.presetNodes.remove(name);
     }
 
     private void generateNodes() {
@@ -113,19 +83,11 @@ public class PresetLoader {
                 UpgradeNode node = new UpgradeNode(nodeName);
                 node.setUpgradeCosts(upgrades[0], upgrades[1], upgrades[2], upgrades[3]);
 
-                insertNodeToList(nodeName);
                 this.presetNodes.put(nodeName, node);
             }
+            this.initialSize = this.presetNodes.size();
         } catch (IOException ex) {
             throw new RuntimeException("Unable to read file " + ex.getMessage());
-        }
-    }
-
-    private void insertNodeToList(String name) {
-        if (!this.loadedNodes.contains(name)) {
-            this.loadedNodes.add(name);
-        } else {
-            throw new IllegalArgumentException(this.fileLocation + " contains duplicate node: " + name);
         }
     }
 

@@ -1,13 +1,14 @@
 package com.warships.nodes;
 
 import com.warships.constants.WarshipConstants;
+import com.warships.utils.StringUtility;
 
 public class TechNode {
 
-    public static final int NODE_WIDTH = 31;
+    public static final int NODE_WIDTH = WarshipConstants.NODE_NAME_MIN_WIDTH + 16;
 
     public static String emptyNodeString() {
-        return WarshipConstants.BLANK_SPACE.repeat(TechNode.NODE_WIDTH + 3);
+        return StringUtility.repeat(WarshipConstants.BLANK_SPACE, TechNode.NODE_WIDTH + 3);
     }
 
     private String name;
@@ -104,18 +105,50 @@ public class TechNode {
         nextLowerNode.nextUpperNode = this;
     }
 
+    /**
+     * Checks if this node is in the same engine tree as another. Comparing
+     * <code>EngineNode</code>s will always return <code>true</code>.
+     *
+     * @param node Node to check.
+     * @return true if this node or the specified node are in the same engine room.
+     */
+    public boolean isSameEngine(TechNode node) {
+        return (node instanceof EngineNode) || (this instanceof EngineNode)
+                || (node.getEngineNumber() == this.engineNumber);
+    }
+
+    /**
+     * Checks if this node has an upper connection.
+     *
+     * @return true if the next upper node is not null.
+     */
     public boolean hasUpper() {
         return nextUpperNode != null;
     }
 
+    /**
+     * Checks if this node has a connection to the right.
+     *
+     * @return true if the next right node is not null.
+     */
     public boolean hasRight() {
         return nextRightNode != null;
     }
 
+    /**
+     * Checks if this node has a lower connection.
+     *
+     * @return true if the next lower node is not null.
+     */
     public boolean hasLower() {
         return nextLowerNode != null;
     }
 
+    /**
+     * Checks if this node has a connection to the left.
+     *
+     * @return true if the next left node is not null.
+     */
     public boolean hasLeft() {
         return nextLeftNode != null;
     }
@@ -127,7 +160,8 @@ public class TechNode {
             appendUnlock(builder, this.name, this.unlockCost);
         } else if (!isUnlocked) {
             appendLock(builder, this.name);
-        } else if (this instanceof UpgradeNode node) {
+        } else if (this instanceof UpgradeNode) {
+            UpgradeNode node = (UpgradeNode) this;
             appendName(builder, this.name);
             int level = node.getLevel();
 
@@ -158,7 +192,7 @@ public class TechNode {
      */
     private static void appendName(StringBuilder builder, String name) {
         builder.append(name);
-        if (name.length() < 15) {
+        if (name.length() < WarshipConstants.NODE_NAME_MIN_WIDTH) {
             int spacesNeeded = (WarshipConstants.NODE_NAME_MIN_WIDTH - name.length());
 
             while (spacesNeeded > 0) {
@@ -169,11 +203,9 @@ public class TechNode {
     }
 
     private static void appendLock(StringBuilder builder, String id) {
-        builder.append(WarshipConstants.NODE_LOCK);
-        builder.append(WarshipConstants.NODE_BLANK);
         appendName(builder, id);
 
-        int remainingWidth = 13;
+        int remainingWidth = 14;
         int spacesNeeded = (remainingWidth - WarshipConstants.NODE_LOCK.length());
 
         while (spacesNeeded > 0) {
@@ -181,15 +213,16 @@ public class TechNode {
             spacesNeeded--;
         }
 
+        builder.append(WarshipConstants.NODE_LOCK);
     }
 
     /**
      * Total appended characters: 4
      */
     private static void appendUnlock(StringBuilder builder, String id, int cost) {
+        appendName(builder, id);
         builder.append(String.format(WarshipConstants.NODE_UNLOCK, cost));
         builder.append(WarshipConstants.NODE_BLANK);
-        appendName(builder, id);
         builder.append(WarshipConstants.NODE_BLANK);
     }
 

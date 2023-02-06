@@ -10,6 +10,9 @@ public class DefenseRaffle extends Raffle {
     public static final String FLAMETHROWER = "Flamethrower";
     public static final String ROCKET_LAUNCHER = "Rocket Launcher";
     public static final String SHOCK_LAUNCHER = "Shock Launcher";
+    public static final String MINE = "Mine";
+    public static final String BOOM_MINE = "Boom Mine";
+    public static final String SHOCK_MINE = "Shock Mine";
 
     public DefenseRaffle() {
         super.initialize(this.getClass());

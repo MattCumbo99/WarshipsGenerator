@@ -18,8 +18,28 @@ public class TroopRaffle extends Raffle {
     public static final String ROCKET_CHOPPA = "Rocket Choppa";
     public static final String HEAVY_CHOPPA = "Heavy Choppa";
     public static final String SEEKER = "Seeker";
+    public static final String CPT_EVERSPARK = "Cpt. Everspark";
+    public static final String DR_KAVAN = "Dr. Kavan";
+    public static final String PVT_BULLIT = "Pvt. Bullit";
+    public static final String SGT_BRICK = "Sgt. Brick";
 
     public TroopRaffle() {
         super.initialize(this.getClass());
+    }
+
+    /**
+     * Picks and removes a necessary troop that can deal damage.
+     *
+     * @return String name of troop that is not a medic.
+     */
+    public String removeRandomImportant() {
+        String troop = super.peekRandom();
+
+        while (troop.equals(MEDIC)) {
+            troop = super.peekRandom();
+        }
+
+        super.remove(troop);
+        return troop;
     }
 }
