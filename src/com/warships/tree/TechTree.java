@@ -199,7 +199,7 @@ public class TechTree {
     private void generateVerticalNodes(int x) {
         for (int y = 0; y < 3; y++) {
             if (getNode(x, y) != null) {
-
+                // TODO algorithm for generating vertical nodes
             }
         }
     }
