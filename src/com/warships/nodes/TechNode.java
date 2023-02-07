@@ -15,6 +15,7 @@ public class TechNode {
     private int unlockCost;
     private int engineNumber;
     private boolean isUnlocked;
+    private boolean isAttached;
     private TechNode nextLeftNode;
     private TechNode nextUpperNode;
     private TechNode nextRightNode;
@@ -25,6 +26,7 @@ public class TechNode {
         this.engineNumber = 1;
         this.isUnlocked = false;
         this.unlockCost = 30;
+        this.isAttached = false;
         this.nextLeftNode = null;
         this.nextLowerNode = null;
         this.nextRightNode = null;
@@ -37,72 +39,199 @@ public class TechNode {
         this.unlockCost = unlockCost;
     }
 
+    /**
+     * Gets the name associated with this node.
+     *
+     * @return the name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of the node.
+     *
+     * @param name The name to set.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Checks if this node is attached to the main tech tree and
+     * if an unlock path to it is possible.
+     *
+     * @return true if this node is attached.
+     */
+    public boolean isAttached() {
+        return isAttached;
+    }
+
+    /**
+     * Marks this node as attached to the main tree.
+     */
+    public void attach() {
+        isAttached = true;
+    }
+
+    /**
+     * Gets the unlock cost of this node.
+     *
+     * @return the unlock cost.
+     */
     public int getUnlockCost() {
         return unlockCost;
     }
 
+    /**
+     * Sets the unlock cost of this node.
+     *
+     * @param unlockCost The unlock cost.
+     */
     public void setUnlockCost(int unlockCost) {
         this.unlockCost = unlockCost;
     }
 
+    /**
+     * Unlocks the node and allows neighboring nodes to be unlocked.
+     */
     public void unlock() {
         this.isUnlocked = true;
     }
 
+    /**
+     * Checks if this node is unlocked.
+     *
+     * @return true if this node is unlocked.
+     */
     public boolean isUnlocked() {
         return isUnlocked;
     }
 
+    /**
+     * Gets the node connected to the left of this node.
+     *
+     * @return the node to the left.
+     */
     public TechNode getNextLeftNode() {
         return nextLeftNode;
     }
 
+    /**
+     * Sets the left connection of this node.
+     *
+     * @param nextLeftNode Node to connect.
+     */
     public void setNextLeftNode(TechNode nextLeftNode) {
         this.nextLeftNode = nextLeftNode;
-        nextLeftNode.nextRightNode = this;
+        if (nextLeftNode != null) {
+            nextLeftNode.nextRightNode = this;
+
+            if (!this.isAttached) {
+                this.isAttached = nextLeftNode.isAttached();
+            }
+
+            attemptAttachment();
+        }
     }
 
+    /**
+     * Gets the node connected above this node.
+     *
+     * @return the upper connected node.
+     */
     public TechNode getNextUpperNode() {
         return nextUpperNode;
     }
 
+    /**
+     * Sets the upper connection of this node.
+     *
+     * @param nextUpperNode The node to connect.
+     */
     public void setNextUpperNode(TechNode nextUpperNode) {
         this.nextUpperNode = nextUpperNode;
-        nextUpperNode.nextLowerNode = this;
+        if (nextUpperNode != null) {
+            nextUpperNode.nextLowerNode = this;
+
+            if (!this.isAttached) {
+                this.isAttached = nextUpperNode.isAttached();
+            }
+
+            attemptAttachment();
+        }
     }
 
+    /**
+     * Gets the node connected to the right of this node.
+     *
+     * @return the node connected to the right.
+     */
     public TechNode getNextRightNode() {
         return nextRightNode;
     }
 
+    /**
+     * Sets the right connection of this node.
+     *
+     * @param nextRightNode Node to connect.
+     */
     public void setNextRightNode(TechNode nextRightNode) {
         this.nextRightNode = nextRightNode;
-        nextRightNode.nextLeftNode = this;
+        if (nextRightNode != null) {
+            nextRightNode.nextLeftNode = this;
+
+            if (!this.isAttached) {
+                this.isAttached = nextRightNode.isAttached();
+            }
+
+            attemptAttachment();
+        }
     }
 
-    public void setEngineNumber(int engineNumber) {
-        this.engineNumber = engineNumber;
-    }
-
-    public int getEngineNumber() {
-        return engineNumber;
-    }
-
+    /**
+     * Gets the node connected below this node.
+     *
+     * @return the lower connected node.
+     */
     public TechNode getNextLowerNode() {
         return nextLowerNode;
     }
 
+    /**
+     * Sets the lower connection of this node.
+     *
+     * @param nextLowerNode Node to connect.
+     */
     public void setNextLowerNode(TechNode nextLowerNode) {
         this.nextLowerNode = nextLowerNode;
-        nextLowerNode.nextUpperNode = this;
+        if (nextLowerNode != null) {
+            nextLowerNode.nextUpperNode = this;
+
+            if (!this.isAttached) {
+                this.isAttached = nextLowerNode.isAttached();
+            }
+
+            attemptAttachment();
+        }
+    }
+
+    /**
+     * Sets the engine number of this node.
+     *
+     * @param engineNumber The engine number to set.
+     */
+    public void setEngineNumber(int engineNumber) {
+        this.engineNumber = engineNumber;
+    }
+
+    /**
+     * Gets the engine number of this node.
+     *
+     * @return the engine number.
+     */
+    public int getEngineNumber() {
+        return engineNumber;
     }
 
     /**
@@ -153,6 +282,15 @@ public class TechNode {
         return nextLeftNode != null;
     }
 
+    /**
+     * Checks if this node has any connections.
+     *
+     * @return true if this node has a connection.
+     */
+    public boolean hasAny() {
+        return hasLeft() || hasUpper() || hasRight() || hasLower();
+    }
+
     public String toString() {
         StringBuilder builder = new StringBuilder("(");
 
@@ -178,6 +316,32 @@ public class TechNode {
         builder.append(")");
 
         return builder.toString();
+    }
+
+    /**
+     * Recursively attaches any connected nodes claiming they are not attached.
+     */
+    private void attemptAttachment() {
+        if (this.isAttached) {
+            _attachRecursive(this.nextLeftNode);
+            _attachRecursive(this.nextLowerNode);
+            _attachRecursive(this.nextRightNode);
+            _attachRecursive(this.nextUpperNode);
+        }
+    }
+
+    private void _attachRecursive(TechNode otherNode) {
+        if (otherNode == null) {
+            return;
+        }
+
+        if (!otherNode.isAttached()) {
+            otherNode.attach();
+            _attachRecursive(otherNode.getNextLeftNode());
+            _attachRecursive(otherNode.getNextRightNode());
+            _attachRecursive(otherNode.getNextUpperNode());
+            _attachRecursive(otherNode.getNextLowerNode());
+        }
     }
 
     private static void appendMaxUpgrade(StringBuilder builder) {

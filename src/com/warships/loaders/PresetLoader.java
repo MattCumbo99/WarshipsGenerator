@@ -63,7 +63,11 @@ public class PresetLoader {
      * @return the removed node.
      */
     public UpgradeNode unloadNode(String name) {
-        return this.presetNodes.remove(name);
+        UpgradeNode node = this.presetNodes.remove(name);
+        if (node == null) {
+            throw new RuntimeException("Node is not present for pulling: " + name);
+        }
+        return node;
     }
 
     private void generateNodes() {

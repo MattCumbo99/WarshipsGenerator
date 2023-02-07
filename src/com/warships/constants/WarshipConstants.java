@@ -24,7 +24,13 @@ public final class WarshipConstants {
     public static final String HORIZONTAL_CONNECTOR = "=";
     public static final int HORIZONTAL_CONNECTION_LENGTH = 5;
 
-    public static final String VERTICAL_CONNECTOR = "│⇅│";
+    public static final int GBE_BONUS_AMOUNT = 3;
+    public static final int TROOP_DMG_BONUS_AMOUNT = 4;
+    public static final int TROOP_HEALTH_BONUS_AMOUNT = 4;
+    public static final int DEFENSE_DMG_BONUS_AMOUNT = 4;
+    public static final int DEFENSE_HEALTH_BONUS_AMOUNT = 4;
+
+    public static final String VERTICAL_CONNECTOR = "↨ ↨"; // │⇅│
 
     private WarshipConstants() {
         throw new IllegalStateException("Cannot instantiate constants class.");
