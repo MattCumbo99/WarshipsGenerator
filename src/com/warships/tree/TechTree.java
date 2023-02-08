@@ -10,6 +10,7 @@ import com.warships.constants.ConnectionConstants;
 import com.warships.constants.WarshipConstants;
 import com.warships.loaders.PresetLoader;
 import com.warships.nodes.BonusNodes;
+import com.warships.nodes.ChoiceNode;
 import com.warships.nodes.EngineNode;
 import com.warships.nodes.TechNode;
 import com.warships.nodes.UpgradeNode;
@@ -41,6 +42,7 @@ public class TechTree {
     private int defenseDamageNodes;
 
     private int currentEngineNumber;
+    private int choiceNodes;
 
     private int lastTopX;
     private int lastMidX;
@@ -62,6 +64,9 @@ public class TechTree {
         this.troopHealthNodes = WarshipConstants.TROOP_HEALTH_BONUS_AMOUNT;
         this.defenseDamageNodes = WarshipConstants.DEFENSE_DMG_BONUS_AMOUNT;
         this.defenseHealthNodes = WarshipConstants.DEFENSE_HEALTH_BONUS_AMOUNT;
+        this.choiceNodes = 12;
+
+        // Total nodes = 75
 
         initializeBaseNodes();
     }
@@ -120,6 +125,7 @@ public class TechTree {
             for (int x = 0; x <= maxX; x++) {
                 TechNode currentNode = getNode(x, y);
 
+                // Check if a node is present
                 if (currentNode != null) {
                     // Display the node
                     nodes.append(currentNode);
@@ -127,7 +133,7 @@ public class TechTree {
                     appendHorizontalConnection(nodes, currentNode.hasRight());
 
                     // Check for a lower connection
-                    if (currentNode.hasLower()) {
+                    if (currentNode.hasLower() && y > 0) {
                         // Add connector to buffer line
                         appendSpaces(buff, (TechNode.NODE_WIDTH / 2));
                         buff.append(WarshipConstants.VERTICAL_CONNECTOR);
@@ -237,11 +243,11 @@ public class TechTree {
         insertNode(2, 1, defense3);
         attemptConnection(2, 1, ConnectionConstants.LEFT);
 
-        UpgradeNode random1 = randomNode();
+        UpgradeNode random1 = randomUpgradeNode();
         insertNode(2, 2, random1);
         attemptConnection(2, 2, ConnectionConstants.LOWER);
 
-        UpgradeNode random2 = randomNode();
+        UpgradeNode random2 = randomUpgradeNode();
         insertNode(2, 0, random2);
         attemptConnection(2, 0, ConnectionConstants.UPPER);
 
@@ -264,17 +270,9 @@ public class TechTree {
 
     private void generateNodeColumn(int starterX) {
         for (int y = 0; y <= 2; y++) {
-            // TODO algorithm for generating vertical nodes
-            UpgradeNode node = randomNode();
-            node.setEngineNumber(this.currentEngineNumber);
+            TechNode node = randomNode();
             insertNode(starterX, y, node);
         }
-
-        int leftSequence = MathUtility.random(0, 6);
-        int vertSequence = MathUtility.random(0, 2);
-
-        establishLeftConnections(starterX, leftSequence);
-        establishVerticalConnections(starterX, vertSequence);
     }
 
     private void generateEngineColumn(int starterX) {
@@ -283,74 +281,13 @@ public class TechTree {
         for (int y = 0; y <= 2; y++) {
             if (y == engineSpot) {
                 // Insert the engine node
-                EngineNode engine = new EngineNode(this.currentEngineNumber);
+                EngineNode engine = new EngineNode(1);
                 insertNode(starterX, y, engine);
             } else {
                 // Insert a regular node
-                UpgradeNode node = randomNode();
-                node.setEngineNumber(this.currentEngineNumber);
+                TechNode node = randomNode();
                 insertNode(starterX, y, node);
             }
-        }
-
-        int leftSequence = MathUtility.random(0, 6);
-        int vertSequence = MathUtility.random(0, 2);
-
-        establishLeftConnections(starterX, leftSequence);
-        establishVerticalConnections(starterX, vertSequence);
-
-        EngineNode engineNode = (EngineNode) getNode(starterX, engineSpot);
-        if (!engineNode.isAttached()) {
-            // Rogue engine node detected. Connect it with the main tree
-            attemptConnection(starterX, engineSpot, ConnectionConstants.LEFT);
-        }
-
-        this.currentEngineNumber++;
-    }
-
-    private void establishVerticalConnections(int columnX, int sequenceNumber) {
-        switch (sequenceNumber) {
-            case 0:
-                attemptConnection(columnX, 0, ConnectionConstants.UPPER);
-                break;
-            case 1:
-                attemptConnection(columnX, 1, ConnectionConstants.UPPER);
-                break;
-            case 2:
-                attemptConnection(columnX, 0, ConnectionConstants.UPPER);
-                attemptConnection(columnX, 1, ConnectionConstants.UPPER);
-                break;
-            default:
-                throw new UnsupportedOperationException("Sequence number not supported: " + sequenceNumber);
-        }
-    }
-
-    private void establishLeftConnections(int columnX, int sequenceNumber) {
-        switch (sequenceNumber) {
-            case 0:
-            case 1:
-            case 2:
-                attemptConnection(columnX, sequenceNumber, ConnectionConstants.LEFT);
-                break;
-            case 3:
-                attemptConnection(columnX, 0, ConnectionConstants.LEFT);
-                attemptConnection(columnX, 1, ConnectionConstants.LEFT);
-                break;
-            case 4:
-                attemptConnection(columnX, 1, ConnectionConstants.LEFT);
-                attemptConnection(columnX, 2, ConnectionConstants.LEFT);
-                break;
-            case 5:
-                attemptConnection(columnX, 0, ConnectionConstants.LEFT);
-                attemptConnection(columnX, 2, ConnectionConstants.LEFT);
-                break;
-            case 6:
-                attemptConnection(columnX, 0, ConnectionConstants.LEFT);
-                attemptConnection(columnX, 1, ConnectionConstants.LEFT);
-                attemptConnection(columnX, 2, ConnectionConstants.LEFT);
-                break;
-            default:
-                throw new UnsupportedOperationException("Sequence number not supported: " + sequenceNumber);
         }
     }
 
@@ -367,7 +304,19 @@ public class TechTree {
         }
     }
 
-    private UpgradeNode randomNode() {
+    private TechNode randomNode() {
+        int choice = MathUtility.random(0, 8);
+
+        if (choice == 8 && this.choiceNodes > 0) {
+            // The random selection is a choice node
+            this.choiceNodes--;
+            return new ChoiceNode(this.defenseRaffle);
+        } else {
+            return randomUpgradeNode();
+        }
+    }
+
+    private UpgradeNode randomUpgradeNode() {
         if (loader.isEmpty() && !hasBonusNodes()) {
             return null;
         }
@@ -396,34 +345,35 @@ public class TechTree {
                     // Bonus GBE node
                     if (this.gbeNodes > 0) {
                         this.gbeNodes--;
-                        return BonusNodes.GBE;
+                        return new UpgradeNode(BonusNodes.GBE);
                     }
                 case 4:
                     // Bonus Troop Damage node
                     if (this.troopDmgNodes > 0) {
                         this.troopDmgNodes--;
-                        return BonusNodes.TROOP_DAMAGE;
+                        return new UpgradeNode(BonusNodes.TROOP_DAMAGE);
                     }
                 case 5:
                     // Bonus defense damage node
                     if (this.defenseDamageNodes > 0) {
                         this.defenseDamageNodes--;
-                        return BonusNodes.BUILDING_DAMAGE;
+                        return new UpgradeNode(BonusNodes.BUILDING_DAMAGE);
                     }
                 case 6:
                     // Bonus troop health node
                     if (this.troopHealthNodes > 0) {
                         this.troopHealthNodes--;
-                        return BonusNodes.TROOP_HEALTH;
+                        return new UpgradeNode(BonusNodes.TROOP_HEALTH);
                     }
                 case 7:
                     // Bonus defense health node
                     if (this.defenseHealthNodes > 0) {
                         this.defenseHealthNodes--;
-                        return BonusNodes.BUILDING_HEALTH;
+                        return new UpgradeNode(BonusNodes.BUILDING_HEALTH);
                     }
 
                     if (repeated) {
+                        // For some reason, we could not locate any possible node.
                         throw new BufferOverflowException();
                     }
 

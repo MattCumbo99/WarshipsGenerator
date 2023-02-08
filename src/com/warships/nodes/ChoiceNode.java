@@ -82,7 +82,7 @@ public class ChoiceNode extends TechNode {
     }
 
     private static String selectRandomFromRaffle(List<String> winners) {
-        int max = winners.size();
+        int max = winners.size() - 1;
         int randomIndex = MathUtility.random(0, max);
 
         return winners.remove(randomIndex);

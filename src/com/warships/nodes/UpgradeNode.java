@@ -15,6 +15,13 @@ public class UpgradeNode extends TechNode {
         super.setName(name);
     }
 
+    public UpgradeNode(UpgradeNode node) {
+        this.upgradeCosts = new int[4];
+        setUpgradeCosts(node.getUpgradeCost(0), node.getUpgradeCost(1), node.getUpgradeCost(2), node.getUpgradeCost(3));
+
+        super.setName(node.getName());
+    }
+
     public int getLevel() {
         if (super.isUnlocked()) {
             return upgradeCounter + 1;
@@ -28,6 +35,10 @@ public class UpgradeNode extends TechNode {
         this.upgradeCosts[1] = level3;
         this.upgradeCosts[2] = level4;
         this.upgradeCosts[3] = level5;
+    }
+
+    public int getUpgradeCost(int level) {
+        return this.upgradeCosts[level];
     }
 
     public void upgrade() {
