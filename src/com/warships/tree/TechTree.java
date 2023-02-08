@@ -29,7 +29,7 @@ public class TechTree {
      * - Three nodes per vertical axis
      */
 
-    private final Map<Point, TechNode> tree;
+    private Map<Point, TechNode> tree;
     private final PresetLoader loader;
     private final GunboatRaffle gbeRaffle;
     private final TroopRaffle troopRaffle;
@@ -252,6 +252,9 @@ public class TechTree {
         attemptConnection(2, 0, ConnectionConstants.UPPER);
 
         generateVerticalNodes(this.lastBotX + 1, 2);
+
+        MazeGenerator gen = new MazeGenerator(this.tree, 3,this.lastBotX + 1);
+        this.tree = gen.getResult();
     }
 
     private void generateVerticalNodes(int starterX, int numColumns) {
@@ -265,7 +268,6 @@ public class TechTree {
         } else {
             generateEngineColumn(starterX);
         }
-
     }
 
     private void generateNodeColumn(int starterX) {
