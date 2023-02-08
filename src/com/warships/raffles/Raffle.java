@@ -76,7 +76,7 @@ public abstract class Raffle {
      * @return the selected ticket.
      */
     public String getRandomWinner() {
-        int max = this.winners.size();
+        int max = this.winners.size() - 1;
         int randomIndex = MathUtility.random(0, max);
 
         return this.winners.get(randomIndex);
@@ -107,7 +107,7 @@ public abstract class Raffle {
      * @return the removed ticket.
      */
     public String removeRandom() {
-        int max = this.tickets.size();
+        int max = this.tickets.size() - 1;
         int randomIndex = MathUtility.random(0, max);
 
         String result = this.tickets.remove(randomIndex);
@@ -122,7 +122,7 @@ public abstract class Raffle {
      * @return a random ticket.
      */
     public String peekRandom() {
-        int max = this.tickets.size();
+        int max = this.tickets.size() - 1;
         int randomIndex = MathUtility.random(0, max);
 
         return this.tickets.get(randomIndex);
