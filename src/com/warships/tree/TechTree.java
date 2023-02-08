@@ -1,6 +1,13 @@
 package com.warships.tree;
 
+import java.awt.*;
+import java.io.File;
+import java.nio.BufferOverflowException;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.warships.constants.ConnectionConstants;
+import com.warships.constants.WarshipConstants;
 import com.warships.loaders.PresetLoader;
 import com.warships.nodes.BonusNodes;
 import com.warships.nodes.EngineNode;
@@ -8,16 +15,10 @@ import com.warships.nodes.TechNode;
 import com.warships.nodes.UpgradeNode;
 import com.warships.raffles.DefenseRaffle;
 import com.warships.raffles.GunboatRaffle;
-import com.warships.constants.WarshipConstants;
 import com.warships.raffles.Raffle;
 import com.warships.raffles.TroopRaffle;
+import com.warships.utils.MathUtility;
 import com.warships.utils.StringUtility;
-
-import java.awt.Point;
-import java.io.File;
-import java.nio.BufferOverflowException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TechTree {
 
@@ -27,11 +28,11 @@ public class TechTree {
      * - Three nodes per vertical axis
      */
 
-    private Map<Point, TechNode> tree;
-    private PresetLoader loader;
-    private GunboatRaffle gbeRaffle;
-    private TroopRaffle troopRaffle;
-    private DefenseRaffle defenseRaffle;
+    private final Map<Point, TechNode> tree;
+    private final PresetLoader loader;
+    private final GunboatRaffle gbeRaffle;
+    private final TroopRaffle troopRaffle;
+    private final DefenseRaffle defenseRaffle;
 
     private int gbeNodes;
     private int troopDmgNodes;
@@ -72,7 +73,7 @@ public class TechTree {
     }
 
     public Point getPositionOf(String name) {
-        for (Map.Entry<Point, TechNode> id: this.tree.entrySet()) {
+        for (Map.Entry<Point, TechNode> id : this.tree.entrySet()) {
             Point nodePos = id.getKey();
 
             if (id.getValue().getName().equals(name)) {
@@ -84,7 +85,7 @@ public class TechTree {
     }
 
     public TechNode getNode(String name) {
-        for (Map.Entry<Point, TechNode> id: this.tree.entrySet()) {
+        for (Map.Entry<Point, TechNode> id : this.tree.entrySet()) {
             String nodeName = id.getValue().getName();
 
             if (nodeName.equals(name)) {
@@ -128,9 +129,9 @@ public class TechTree {
                     // Check for a lower connection
                     if (currentNode.hasLower()) {
                         // Add connector to buffer line
-                        appendSpaces(buff, (TechNode.NODE_WIDTH/2));
+                        appendSpaces(buff, (TechNode.NODE_WIDTH / 2));
                         buff.append(WarshipConstants.VERTICAL_CONNECTOR);
-                        appendSpaces(buff, (TechNode.NODE_WIDTH/2));
+                        appendSpaces(buff, (TechNode.NODE_WIDTH / 2));
                     } else {
                         appendSpaces(buff, TechNode.NODE_WIDTH + WarshipConstants.HORIZONTAL_CONNECTION_LENGTH);
                     }
@@ -157,8 +158,8 @@ public class TechTree {
      * <br>
      * If the instructions are not possible, nothing is changed.
      *
-     * @param x X position of the node.
-     * @param y Y position of the node.
+     * @param x          X position of the node.
+     * @param y          Y position of the node.
      * @param connection Instructions of the connection.
      * @return true if the connection was possible.
      */
@@ -269,15 +270,15 @@ public class TechTree {
             insertNode(starterX, y, node);
         }
 
-        int leftSequence = (int) Math.floor(Math.random() * 6);
-        int vertSequence = (int) Math.floor(Math.random() * 2);
+        int leftSequence = MathUtility.random(0, 6);
+        int vertSequence = MathUtility.random(0, 2);
 
         establishLeftConnections(starterX, leftSequence);
         establishVerticalConnections(starterX, vertSequence);
     }
 
     private void generateEngineColumn(int starterX) {
-        int engineSpot = (int) Math.floor(Math.random() * 2);
+        int engineSpot = MathUtility.random(0, 2);
 
         for (int y = 0; y <= 2; y++) {
             if (y == engineSpot) {
@@ -292,8 +293,8 @@ public class TechTree {
             }
         }
 
-        int leftSequence = (int) Math.floor(Math.random() * 6);
-        int vertSequence = (int) Math.floor(Math.random() * 2);
+        int leftSequence = MathUtility.random(0, 6);
+        int vertSequence = MathUtility.random(0, 2);
 
         establishLeftConnections(starterX, leftSequence);
         establishVerticalConnections(starterX, vertSequence);
@@ -353,15 +354,6 @@ public class TechTree {
         }
     }
 
-    /**
-     * Gets a random number between 0 and 1.
-     *
-     * @return integer with a value of 0 or 1.
-     */
-    private static int coinFlip() {
-        return (int) Math.floor(Math.random());
-    }
-
     private int getMaxValueX(int y) {
         switch (y) {
             case 2:
@@ -380,7 +372,7 @@ public class TechTree {
             return null;
         }
 
-        int type = (int) Math.floor(Math.random() * 7);
+        int type = MathUtility.random(0, 7);
         boolean repeated = false;
 
         while (true) {

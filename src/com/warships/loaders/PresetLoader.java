@@ -1,23 +1,23 @@
 package com.warships.loaders;
 
-import com.warships.nodes.UpgradeNode;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.List;
+
+import com.warships.nodes.UpgradeNode;
 
 /**
  * Loader class for reading pre-defined upgrade node data.
  */
 public class PresetLoader {
 
-    private String fileLocation;
-    private Map<String, UpgradeNode> presetNodes;
-    private List<String> loadedNodes;
+    private final String fileLocation;
+    private final Map<String, UpgradeNode> presetNodes;
+    private final List<String> loadedNodes;
     private int initialSize;
 
     public PresetLoader(String fileLocation) {

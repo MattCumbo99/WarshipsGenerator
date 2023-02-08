@@ -1,14 +1,15 @@
 package com.warships.nodes;
 
 import java.util.List;
+import javafx.util.Pair;
 
 import com.warships.constants.WarshipConstants;
 import com.warships.raffles.DefenseRaffle;
-import javafx.util.Pair;
+import com.warships.utils.MathUtility;
 
 public class ChoiceNode extends TechNode {
 
-    private Pair<String, Integer>[] choices;
+    private final Pair<String, Integer>[] choices;
     private int selectedChoice;
 
     private ChoiceNode() {
@@ -82,7 +83,7 @@ public class ChoiceNode extends TechNode {
 
     private static String selectRandomFromRaffle(List<String> winners) {
         int max = winners.size();
-        int randomIndex = (int) Math.floor(Math.random() * (max - 1));
+        int randomIndex = MathUtility.random(0, max);
 
         return winners.remove(randomIndex);
     }
