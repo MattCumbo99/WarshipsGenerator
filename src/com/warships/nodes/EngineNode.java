@@ -4,10 +4,10 @@ import com.warships.constants.WarshipConstants;
 
 public class EngineNode extends TechNode {
 
-    private int techLevelRequired;
+    private final int techLevelRequired;
 
     public EngineNode(int engineNumber) {
-        super(("Engine#" + (engineNumber+2)), determineUnlockCost(engineNumber));
+        super(("Engine#" + (engineNumber + 2)), determineUnlockCost(engineNumber));
         super.setEngineNumber(engineNumber);
         this.techLevelRequired = 300 * engineNumber;
     }

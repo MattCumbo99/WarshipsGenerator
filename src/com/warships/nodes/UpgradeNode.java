@@ -1,10 +1,8 @@
 package com.warships.nodes;
 
-import com.warships.nodes.TechNode;
-
 public class UpgradeNode extends TechNode {
 
-    private int[] upgradeCosts;
+    private final int[] upgradeCosts;
     private int upgradeCounter;
 
     public UpgradeNode() {

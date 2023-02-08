@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.warships.utils.MathUtility;
+
 /**
  * The super class of all raffle objects. Raffles
  * are created using accessible <code>static String</code>
@@ -14,8 +16,8 @@ import java.util.stream.Collectors;
  */
 public abstract class Raffle {
 
-    private List<String> tickets;
-    private List<String> winners;
+    private final List<String> tickets;
+    private final List<String> winners;
 
     protected Raffle() {
         this.tickets = new ArrayList<>();
@@ -34,7 +36,7 @@ public abstract class Raffle {
         List<Field> fields = Arrays.stream(clazz.getDeclaredFields()).filter(f ->
                 Modifier.isStatic(f.getModifiers())).collect(Collectors.toList());
 
-        for (Field field: fields) {
+        for (Field field : fields) {
             try {
                 Object value = field.get(clazz);
                 if (value instanceof String) {
@@ -75,7 +77,7 @@ public abstract class Raffle {
      */
     public String getRandomWinner() {
         int max = this.winners.size();
-        int randomIndex = (int) Math.floor(Math.random() * (max - 1));
+        int randomIndex = MathUtility.random(0, max);
 
         return this.winners.get(randomIndex);
     }
@@ -106,7 +108,7 @@ public abstract class Raffle {
      */
     public String removeRandom() {
         int max = this.tickets.size();
-        int randomIndex = (int) Math.floor(Math.random() * (max - 1));
+        int randomIndex = MathUtility.random(0, max);
 
         String result = this.tickets.remove(randomIndex);
         this.winners.add(result);
@@ -121,7 +123,7 @@ public abstract class Raffle {
      */
     public String peekRandom() {
         int max = this.tickets.size();
-        int randomIndex = (int) Math.floor(Math.random() * (max - 1));
+        int randomIndex = MathUtility.random(0, max);
 
         return this.tickets.get(randomIndex);
     }
