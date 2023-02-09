@@ -90,7 +90,7 @@ public class MazeGenerator {
     }
 
     private void connectNodes(int firstX, int firstY, int secondX, int secondY, String connection) {
-        // FIXME connect each in the range instead of just neighboring nodes
+        System.out.println(String.format("Node (%s, %s) to %s (%s, %s)", firstX, firstY, connection, secondX, secondY));
         switch (connection) {
             case ConnectionConstants.LEFT:
                 this.maze[firstY][firstX].setNextLeftNode(this.maze[secondY][secondX]);
@@ -98,10 +98,10 @@ public class MazeGenerator {
             case ConnectionConstants.RIGHT:
                 this.maze[firstY][firstX].setNextRightNode(this.maze[secondY][secondX]);
                 break;
-            case ConnectionConstants.UPPER:
+            case ConnectionConstants.LOWER:
                 this.maze[firstY][firstX].setNextUpperNode(this.maze[secondY][secondX]);
                 break;
-            case ConnectionConstants.LOWER:
+            case ConnectionConstants.UPPER:
                 this.maze[firstY][firstX].setNextLowerNode(this.maze[secondY][secondX]);
                 break;
             default:

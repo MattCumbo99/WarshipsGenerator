@@ -119,6 +119,8 @@ public class TechTree {
         // Buffer string for connectors between vertical nodes
         StringBuilder buff = new StringBuilder();
 
+        final int connectorSpace = TechNode.NODE_WIDTH + WarshipConstants.HORIZONTAL_CONNECTION_LENGTH;
+
         for (int y = 2; y >= 0; y--) {
             int maxX = getMaxValueX(y);
 
@@ -135,16 +137,23 @@ public class TechTree {
                     // Check for a lower connection
                     if (currentNode.hasLower() && y > 0) {
                         // Add connector to buffer line
-                        appendSpaces(buff, (TechNode.NODE_WIDTH / 2));
+                        final int nodeFirstHalfWidth = WarshipConstants.NODE_NAME_MIN_WIDTH + 1;
+                        final int firstHalfWithConnector = nodeFirstHalfWidth - WarshipConstants.VERTICAL_CONNECTOR.length();
+
+                        appendSpaces(buff, firstHalfWithConnector);
                         buff.append(WarshipConstants.VERTICAL_CONNECTOR);
-                        appendSpaces(buff, (TechNode.NODE_WIDTH / 2));
+                        // Append spaces equal to the amount of the remaining width of the node
+                        appendSpaces(buff, TechNode.NODE_WIDTH - nodeFirstHalfWidth);
+                        // Fill in the space where a connector should be
+                        appendSpaces(buff, WarshipConstants.HORIZONTAL_CONNECTION_LENGTH);
                     } else {
-                        appendSpaces(buff, TechNode.NODE_WIDTH + WarshipConstants.HORIZONTAL_CONNECTION_LENGTH);
+                        // Empty connection
+                        appendSpaces(buff, connectorSpace);
                     }
                 } else {
                     // Empty spot for a node
-                    appendSpaces(nodes, TechNode.NODE_WIDTH + WarshipConstants.HORIZONTAL_CONNECTION_LENGTH);
-                    appendSpaces(buff, TechNode.NODE_WIDTH + WarshipConstants.HORIZONTAL_CONNECTION_LENGTH);
+                    appendSpaces(nodes, connectorSpace);
+                    appendSpaces(buff, connectorSpace);
                 }
             }
 
@@ -251,7 +260,9 @@ public class TechTree {
         insertNode(2, 0, random2);
         attemptConnection(2, 0, ConnectionConstants.UPPER);
 
-        generateVerticalNodes(this.lastBotX + 1, 2);
+        int starterEngineWidth = 2;
+
+        generateVerticalNodes(this.lastBotX + 1, starterEngineWidth);
 
         MazeGenerator gen = new MazeGenerator(this.tree, 3,this.lastBotX + 1);
         this.tree = gen.getResult();

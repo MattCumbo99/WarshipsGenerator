@@ -30,7 +30,7 @@ public final class WarshipConstants {
     public static final int DEFENSE_DMG_BONUS_AMOUNT = 4;
     public static final int DEFENSE_HEALTH_BONUS_AMOUNT = 4;
 
-    public static final String VERTICAL_CONNECTOR = "↨ ↨"; // │⇅│
+    public static final String VERTICAL_CONNECTOR = "| |"; // │⇅│
 
     private WarshipConstants() {
         throw new IllegalStateException("Cannot instantiate constants class.");
