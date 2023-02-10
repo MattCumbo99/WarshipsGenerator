@@ -117,14 +117,36 @@ public abstract class Raffle {
     }
 
     /**
-     * Retrieves a random ticket from the raffle.
+     * Retrieves a list of items not yet removed.
      *
-     * @return a random ticket.
+     * @return The remaining tickets.
      */
-    public String peekRandom() {
-        int max = this.tickets.size() - 1;
-        int randomIndex = MathUtility.random(0, max);
+    public List<String> tickets() {
+        return new ArrayList<>(this.tickets);
+    }
 
-        return this.tickets.get(randomIndex);
+    /**
+     * Prioritizes a random ticket that is not one of the items from the provided list.
+     *
+     * @param unwanted List of items to filter out.
+     * @return The removed ticket.
+     */
+    public String removeWithFilter(List<String> unwanted) {
+        // Filter out the unwanted items
+        List<String> wantedItems = this.tickets().stream().filter((str) ->
+            !unwanted.contains(str)
+        ).collect(Collectors.toList());
+
+        if (!wantedItems.isEmpty()) {
+            // We have available choices, pick one at random
+            int selectedIndex = MathUtility.random(0, wantedItems.size()-1);
+            String result = wantedItems.get(selectedIndex);
+
+            this.remove(result);
+            return result;
+        } else {
+            // There are no other options to pull, use the standard procedure
+            return this.removeRandom();
+        }
     }
 }

@@ -1,5 +1,11 @@
 package com.warships.raffles;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class TroopRaffle extends Raffle {
 
     public static final String RIFLEMAN = "Rifleman";
@@ -21,24 +27,55 @@ public class TroopRaffle extends Raffle {
     public static final String PVT_BULLIT = "Pvt. Bullit";
     public static final String SGT_BRICK = "Sgt. Brick";
 
+    /**
+     * Filter for troops that are considered hard to defend against.
+     */
+    private static final List<String> OVERPOWERED_TROOP_FILTER = Arrays.asList(
+            HEAVY_CHOPPA, SEEKER, SCORCHER, PVT_BULLIT
+    );
+
+    /**
+     * Filter for troops that cannot deal damage without a third party.
+     */
+    private static final List<String> PASSIVE_TROOP_FILTER = Arrays.asList(
+            MEDIC, DR_KAVAN
+    );
+
+    /**
+     * Filter for troops that contain expensive upgrade costs.
+     */
+    private static final List<String> COSTLY_TROOP_FILTER = Arrays.asList(
+            PVT_BULLIT, CPT_EVERSPARK
+    );
+
+    /**
+     * Filter for troops that are considered a bad choice for the first engine room.
+     */
+    private static final List<String> FIRST_TROOP_FILTER = Stream.of(
+            OVERPOWERED_TROOP_FILTER, PASSIVE_TROOP_FILTER, COSTLY_TROOP_FILTER
+    ).flatMap(Collection::stream).collect(Collectors.toList());
+
     public TroopRaffle() {
         super.initialize(this.getClass());
     }
 
+
     /**
-     * Picks and removes a necessary troop that can deal damage.
+     * Gets and removes a simple choice for the first node of a tech tree.
      *
-     * @return String name of troop that is not a medic or Dr. Kavan.
+     * @return String name of the selected choice.
      */
-    public String removeRandomImportant() {
-        String troop = super.peekRandom();
+    public String removeFirstChoice() {
+        return super.removeWithFilter(FIRST_TROOP_FILTER);
+    }
 
-        // Medics cannot deal damage.
-        while (troop.equals(MEDIC) || troop.equals(DR_KAVAN)) {
-            troop = super.peekRandom();
-        }
-
-        super.remove(troop);
-        return troop;
+    /**
+     * Gets and removes a troop with preference for non-challenging options. Nodes that are not
+     * prioritized can be found in the {@link #OVERPOWERED_TROOP_FILTER} variable.
+     *
+     * @return String name of a troop which is not overpowered.
+     */
+    public String removeNonOverpowered() {
+        return super.removeWithFilter(OVERPOWERED_TROOP_FILTER);
     }
 }
