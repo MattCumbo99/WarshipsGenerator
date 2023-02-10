@@ -123,8 +123,8 @@ public class TechNode {
      * @param nextLeftNode Node to connect.
      */
     public void setNextLeftNode(TechNode nextLeftNode) {
-        this.nextLeftNode = nextLeftNode;
         if (nextLeftNode != null) {
+            this.nextLeftNode = nextLeftNode;
             nextLeftNode.nextRightNode = this;
 
             if (!this.isAttached) {
@@ -132,6 +132,10 @@ public class TechNode {
             }
 
             attemptAttachment();
+        } else if (this.nextLeftNode != null) {
+            // Disconnect the node
+            this.nextLeftNode.nextRightNode = null;
+            this.nextLeftNode = null;
         }
     }
 
@@ -150,8 +154,8 @@ public class TechNode {
      * @param nextUpperNode The node to connect.
      */
     public void setNextUpperNode(TechNode nextUpperNode) {
-        this.nextUpperNode = nextUpperNode;
         if (nextUpperNode != null) {
+            this.nextUpperNode = nextUpperNode;
             nextUpperNode.nextLowerNode = this;
 
             if (!this.isAttached) {
@@ -159,6 +163,10 @@ public class TechNode {
             }
 
             attemptAttachment();
+        } else if (this.nextUpperNode != null) {
+            // Disconnect the node
+            this.nextUpperNode.nextLowerNode = null;
+            this.nextUpperNode = null;
         }
     }
 
@@ -177,8 +185,8 @@ public class TechNode {
      * @param nextRightNode Node to connect.
      */
     public void setNextRightNode(TechNode nextRightNode) {
-        this.nextRightNode = nextRightNode;
         if (nextRightNode != null) {
+            this.nextRightNode = nextRightNode;
             nextRightNode.nextLeftNode = this;
 
             if (!this.isAttached) {
@@ -186,6 +194,10 @@ public class TechNode {
             }
 
             attemptAttachment();
+        } else if (this.nextRightNode != null) {
+            // Disconnect the node
+            this.nextRightNode.nextLeftNode = null;
+            this.nextRightNode = null;
         }
     }
 
@@ -204,8 +216,8 @@ public class TechNode {
      * @param nextLowerNode Node to connect.
      */
     public void setNextLowerNode(TechNode nextLowerNode) {
-        this.nextLowerNode = nextLowerNode;
         if (nextLowerNode != null) {
+            this.nextLowerNode = nextLowerNode;
             nextLowerNode.nextUpperNode = this;
 
             if (!this.isAttached) {
@@ -213,6 +225,10 @@ public class TechNode {
             }
 
             attemptAttachment();
+        } else if (this.nextLowerNode != null) {
+            // Disconnect the node
+            this.nextLowerNode.nextUpperNode = null;
+            this.nextLowerNode = null;
         }
     }
 
@@ -316,6 +332,24 @@ public class TechNode {
         builder.append(")");
 
         return builder.toString();
+    }
+
+    public boolean equals(TechNode node) {
+        if (node == null) {
+            return false;
+        }
+
+        boolean isSameType = node.getClass().equals(this.getClass());
+        if (!isSameType) {
+            return false;
+        }
+
+        boolean isSameName = node.getName().equals(this.name);
+        if (!isSameName) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
