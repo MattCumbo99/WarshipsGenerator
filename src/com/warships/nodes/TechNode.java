@@ -352,6 +352,13 @@ public class TechNode {
         return true;
     }
 
+    public boolean canBeUnlocked() {
+        return (this.nextLowerNode != null && this.nextLowerNode.isUnlocked)
+                || (this.nextRightNode != null && this.nextRightNode.isUnlocked)
+                || (this.nextUpperNode != null && this.nextUpperNode.isUnlocked)
+                || (this.nextLeftNode != null && this.nextLeftNode.isUnlocked);
+    }
+
     /**
      * Recursively attaches any connected nodes claiming they are not attached.
      */
@@ -449,12 +456,4 @@ public class TechNode {
         builder.append(level);
         builder.append("]");
     }
-
-    private boolean canBeUnlocked() {
-        return (this.nextLowerNode != null && this.nextLowerNode.isUnlocked)
-                || (this.nextRightNode != null && this.nextRightNode.isUnlocked)
-                || (this.nextUpperNode != null && this.nextUpperNode.isUnlocked)
-                || (this.nextLeftNode != null && this.nextLeftNode.isUnlocked);
-    }
-
 }

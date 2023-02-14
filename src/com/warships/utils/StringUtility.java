@@ -12,6 +12,10 @@ public final class StringUtility {
         return result;
     }
 
+    public static boolean isNotBlank(String string) {
+        return string != null && !string.isBlank();
+    }
+
     private StringUtility() {
         throw new IllegalStateException("Cannot instantiate static class.");
     }

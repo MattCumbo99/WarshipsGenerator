@@ -41,11 +41,12 @@ public class UpgradeNode extends TechNode {
         return this.upgradeCosts[level];
     }
 
-    public void upgrade() {
+    public boolean upgrade() {
         if (this.upgradeCounter == 4) {
-            System.out.println("Cannot upgrade node " + getName() + ". Upgrades are maxed!");
+            return false;
         } else {
             this.upgradeCounter++;
+            return true;
         }
     }
 
