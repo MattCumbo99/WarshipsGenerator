@@ -1,7 +1,10 @@
 package com.warships.nodes;
 
+import static java.util.AbstractMap.SimpleEntry;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import javafx.util.Pair;
 
 import com.warships.constants.WarshipConstants;
 import com.warships.raffles.DefenseRaffle;
@@ -9,12 +12,12 @@ import com.warships.utils.MathUtility;
 
 public class ChoiceNode extends TechNode {
 
-    private final Pair<String, Integer>[] choices;
+    private final List<SimpleEntry<String, Integer>> choices;
     private int selectedChoice;
 
     private ChoiceNode() {
         super.setName(WarshipConstants.NODE_CHOICE);
-        this.choices = new Pair[3];
+        this.choices = new ArrayList<>(3);
 
         this.selectedChoice = -1; // Indicates this node is not unlocked
     }
@@ -28,9 +31,11 @@ public class ChoiceNode extends TechNode {
         this();
 
         List<String> winners = raffle.winners();
-        this.choices[0] = new Pair<>(selectRandomFromRaffle(winners), 1);
-        this.choices[1] = new Pair<>(selectRandomFromRaffle(winners), 1);
-        this.choices[2] = new Pair<>(selectRandomFromRaffle(winners), 1);
+        this.choices.addAll(Arrays.asList(
+                new SimpleEntry<>(selectRandomFromRaffle(winners), 1),
+                new SimpleEntry<>(selectRandomFromRaffle(winners), 1),
+                new SimpleEntry<>(selectRandomFromRaffle(winners), 1)
+        ));
     }
 
     @Override
@@ -44,26 +49,26 @@ public class ChoiceNode extends TechNode {
      *
      * @return Pair data of the selected choice.
      */
-    public Pair<String, Integer> selectedItem() {
-        if (selectedChoice == -1) {
+    public SimpleEntry<String, Integer> selectedItem() {
+        if (this.selectedChoice == -1) {
             return null;
         }
 
-        Pair<String, Integer> selected = choices[selectedChoice];
+        SimpleEntry<String, Integer> selected = this.choices.get(this.selectedChoice);
 
-        return new Pair<>(selected.getKey(), selected.getValue());
+        return new SimpleEntry<>(selected.getKey(), selected.getValue());
     }
 
     /**
-     * Gets the choice under the specified number.
+     * Gets the choice under the specified number. Range should be 0-2.
      *
      * @param choiceNumber Number of the choice.
      * @return Pair data associated with the choice.
      */
-    public Pair<String, Integer> option(int choiceNumber) {
-        Pair<String, Integer> selected = choices[choiceNumber];
+    public SimpleEntry<String, Integer> option(int choiceNumber) {
+        SimpleEntry<String, Integer> selected = this.choices.get(choiceNumber);
 
-        return new Pair<>(selected.getKey(), selected.getValue());
+        return new SimpleEntry<>(selected.getKey(), selected.getValue());
     }
 
     /**
@@ -77,7 +82,7 @@ public class ChoiceNode extends TechNode {
         }
 
         this.selectedChoice = selectedChoice;
-        super.setName(String.format("*%s x%s*", this.choices[selectedChoice].getKey(), this.choices[selectedChoice].getValue()));
+        super.setName(String.format("*%s x%s*", this.choices.get(selectedChoice).getKey(), this.choices.get(selectedChoice).getValue()));
         super.unlock();
     }
 

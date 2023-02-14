@@ -78,32 +78,35 @@ public class TechTree {
      * Generates the tech tree.
      */
     public void generate() {
-        // TODO Clean up this routine
-        // Engine room 1
-        //====================
-        int starterEngineWidth = 2; // Total number of columns that will get generated for the first engine
+        // Engine room 1 (Two engines)
+        insertEngineRoom(2);
+        // Engine room 2 (Three engines)
+        insertEngineRoom(5);
+        // Engine room 3 (Four engines)
+        insertEngineRoom(3);
+        // Engine room 4 (Five engines)
+        insertEngineRoom(4);
+        // Engine room 5 (Six engines)
+        insertEngineRoom(2);
+        // TODO Generate the last engine room
+    }
+
+    /**
+     * Generates and inserts a new engine room layout to the tech tree.
+     *
+     * @param totalColumns Total amount of columns this engine room should have.
+     */
+    private void insertEngineRoom(int totalColumns) {
         int columnStartPos = this.lastBotX + 1;
 
-        generateVerticalNodes(starterEngineWidth);
+        generateVerticalNodes(totalColumns);
 
-        MazeGenerator gen = new MazeGenerator(this.tree, columnStartPos,this.lastBotX + 1);
-        gen.generateMaze();
+        int columnEndPos = this.lastBotX + 1;
 
-        this.tree = gen.getResult();
-        //====================
+        MazeGenerator generator = new MazeGenerator(this.tree, columnStartPos, columnEndPos);
+        generator.generateMaze();
 
-        // Engine room 2
-        //====================
-        int engineRoom2size = 5;
-        columnStartPos = this.lastBotX + 1;
-
-        generateVerticalNodes(engineRoom2size);
-
-        MazeGenerator gen2 = new MazeGenerator(this.tree, columnStartPos, this.lastBotX + 1);
-        gen2.generateMaze();
-
-        this.tree = gen2.getResult();
-        //====================
+        this.tree = generator.getResult();
     }
 
     /**
@@ -144,10 +147,10 @@ public class TechTree {
     }
 
     public boolean buyUpgrade(int x, int y) {
-        if (getNode(x, y) instanceof UpgradeNode) {
-            UpgradeNode node = (UpgradeNode) getNode(x, y);
-            node.upgrade();
-            return true;
+        TechNode node = getNode(x, y);
+        if ((node instanceof UpgradeNode) && node.canBeUnlocked()) {
+            UpgradeNode upnode = (UpgradeNode) node;
+            return upnode.upgrade();
         } else {
             return false;
         }
