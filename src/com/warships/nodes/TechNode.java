@@ -327,6 +327,9 @@ public class TechNode {
             } else {
                 appendMaxUpgrade(builder);
             }
+        } else if (this instanceof ChoiceNode) {
+            appendName(builder, this.name);
+            builder.append(StringUtility.repeat(WarshipConstants.NODE_BLANK, 14));
         }
 
         builder.append(")");
