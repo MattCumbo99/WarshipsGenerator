@@ -191,6 +191,9 @@ public class TechTree {
                         appendSpaces(buff, TechNode.NODE_WIDTH - nodeFirstHalfWidth);
                         // Fill in the space where a connector should be
                         appendSpaces(buff, WarshipConstants.HORIZONTAL_CONNECTION_LENGTH);
+                    } else if (y == 0) {
+                        // Display the X axis labels
+                        appendGridX(buff, x);
                     } else {
                         // Empty connection
                         appendSpaces(buff, connectorSpace);
@@ -356,6 +359,28 @@ public class TechTree {
             TechNode node = randomNode();
             insertNode(starterX, y, node);
         }
+    }
+
+    /**
+     * Appends an X axis label to a string builder.
+     *
+     * @param builder StringBuilder to append to.
+     * @param x X position.
+     */
+    private static void appendGridX(StringBuilder builder, int x) {
+        final int leftHalf = WarshipConstants.NODE_NAME_MIN_WIDTH + 1;
+        builder.append(StringUtility.repeat(WarshipConstants.BLANK_SPACE, leftHalf));
+
+        builder.append(x);
+
+        if (x < 10) {
+            builder.append(WarshipConstants.BLANK_SPACE);
+        }
+
+        final int secondHalf = (TechNode.NODE_WIDTH - leftHalf) - 2;
+        builder.append(StringUtility.repeat(WarshipConstants.BLANK_SPACE, secondHalf));
+
+        appendSpaces(builder, WarshipConstants.HORIZONTAL_CONNECTION_LENGTH);
     }
 
     /**
