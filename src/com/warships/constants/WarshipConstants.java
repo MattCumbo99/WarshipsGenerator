@@ -1,5 +1,7 @@
 package com.warships.constants;
 
+import com.warships.utils.MathUtility;
+
 public final class WarshipConstants {
 
     public static final int ENGINE_ONE_UNLOCK_COST = 36;
@@ -7,6 +9,14 @@ public final class WarshipConstants {
     public static final int ENGINE_THREE_UNLOCK_COST = 90;
     public static final int ENGINE_FOUR_UNLOCK_COST = 110;
     public static final int ENGINE_FIVE_UNLOCK_COST = 165;
+
+    public static final int ROOM_ONE_BONUS_LIMIT = 1;
+    public static final int ROOM_TWO_BONUS_LIMIT = 3;
+    public static final int ROOM_THREE_BONUS_LIMIT = 2;
+    public static final int ROOM_FOUR_BONUS_LIMIT = 2;
+    public static final int ROOM_FIVE_BONUS_LIMIT = 2;
+
+    public static final double CHOICE_NODE_CHANCE = 0.30;
 
     public static final String PRESET_FILENAME = "PresetNodes.txt";
 
