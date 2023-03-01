@@ -104,7 +104,7 @@ public final class CommandProcessor {
                 SimpleEntry<String, Integer> choice2 = chnode.option(1);
                 SimpleEntry<String, Integer> choice3 = chnode.option(2);
 
-                System.out.printf("%s x%s, %s x%s, %s x%s%n", choice1.getKey(), choice1.getValue(),
+                System.out.printf("1 -> %s x%s%n2 -> %s x%s%n3 -> %s x%s%n", choice1.getKey(), choice1.getValue(),
                         choice2.getKey(), choice2.getValue(), choice3.getKey(), choice3.getValue());
             }
         } else {
