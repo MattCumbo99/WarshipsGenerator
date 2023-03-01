@@ -35,11 +35,7 @@ public class TechTree {
     private final TroopRaffle troopRaffle;
     private final DefenseRaffle defenseRaffle;
 
-    private int gbeNodes;
-    private int troopDmgNodes;
-    private int troopHealthNodes;
-    private int defenseHealthNodes;
-    private int defenseDamageNodes;
+    private int bonusNodes;
 
     private int currentEngineNumber;
     private int choiceNodes;
@@ -62,11 +58,7 @@ public class TechTree {
         this.currentEngineNumber = 1;
 
         // Initialize total amount of buff nodes to use
-        this.gbeNodes = WarshipConstants.GBE_BONUS_AMOUNT;
-        this.troopDmgNodes = WarshipConstants.TROOP_DMG_BONUS_AMOUNT;
-        this.troopHealthNodes = WarshipConstants.TROOP_HEALTH_BONUS_AMOUNT;
-        this.defenseDamageNodes = WarshipConstants.DEFENSE_DMG_BONUS_AMOUNT;
-        this.defenseHealthNodes = WarshipConstants.DEFENSE_HEALTH_BONUS_AMOUNT;
+        this.bonusNodes = WarshipConstants.ROOM_ONE_BONUS_LIMIT;
         this.choiceNodes = 12;
 
         // Total nodes = 75
@@ -80,12 +72,20 @@ public class TechTree {
     public void generate() {
         // Engine room 1 (Two engines)
         insertEngineRoom(2);
+
+        this.bonusNodes = WarshipConstants.ROOM_TWO_BONUS_LIMIT;
         // Engine room 2 (Three engines)
         insertEngineRoom(5);
+
+        this.bonusNodes = WarshipConstants.ROOM_THREE_BONUS_LIMIT;
         // Engine room 3 (Four engines)
         insertEngineRoom(3);
+
+        this.bonusNodes = WarshipConstants.ROOM_FOUR_BONUS_LIMIT;
         // Engine room 4 (Five engines)
         insertEngineRoom(4);
+
+        this.bonusNodes = WarshipConstants.ROOM_FIVE_BONUS_LIMIT;
         // Engine room 5 (Six engines)
         insertEngineRoom(2);
         // TODO Generate the last engine room
@@ -430,9 +430,9 @@ public class TechTree {
      * @return The removed node.
      */
     private TechNode randomNode() {
-        int choice = MathUtility.random(0, 8);
+        boolean isNodeChoice = MathUtility.chance(WarshipConstants.CHOICE_NODE_CHANCE);
 
-        if (choice == 8 && this.choiceNodes > 0) {
+        if (isNodeChoice) {
             // The random selection is a choice node
             this.choiceNodes--;
             return new ChoiceNode(this.defenseRaffle);
@@ -448,12 +448,12 @@ public class TechTree {
      * @return The removed node.
      */
     private UpgradeNode randomUpgradeNode() {
-        if (loader.isEmpty() && !hasBonusNodes()) {
+        if (loader.isEmpty() && this.bonusNodes == 0) {
             return null;
         }
 
         int type = MathUtility.random(0, 7);
-        boolean repeated = false;
+        int repeats = 0;
 
         while (true) {
             /*
@@ -494,44 +494,45 @@ public class TechTree {
                     }
                 case 3:
                     // Bonus GBE node
-                    if (this.gbeNodes > 0) {
-                        this.gbeNodes--;
+                    if (this.bonusNodes > 0) {
+                        this.bonusNodes--;
                         return new UpgradeNode(BonusNodes.GBE);
                     }
                 case 4:
                     // Bonus Troop Damage node
-                    if (this.troopDmgNodes > 0) {
-                        this.troopDmgNodes--;
+                    if (this.bonusNodes > 0) {
+                        this.bonusNodes--;
                         return new UpgradeNode(BonusNodes.TROOP_DAMAGE);
                     }
                 case 5:
                     // Bonus defense damage node
-                    if (this.defenseDamageNodes > 0) {
-                        this.defenseDamageNodes--;
+                    if (this.bonusNodes > 0) {
+                        this.bonusNodes--;
                         return new UpgradeNode(BonusNodes.BUILDING_DAMAGE);
                     }
                 case 6:
                     // Bonus troop health node
-                    if (this.troopHealthNodes > 0) {
-                        this.troopHealthNodes--;
+                    if (this.bonusNodes > 0) {
+                        this.bonusNodes--;
                         return new UpgradeNode(BonusNodes.TROOP_HEALTH);
                     }
                 case 7:
                     // Bonus defense health node
-                    if (this.defenseHealthNodes > 0) {
-                        this.defenseHealthNodes--;
+                    if (this.bonusNodes > 0) {
+                        this.bonusNodes--;
                         return new UpgradeNode(BonusNodes.BUILDING_HEALTH);
                     }
 
-                    if (repeated) {
+                    // FIXME this fallback operation needs to be optimized
+                    if (repeats >= 30) {
                         // For some reason, we could not locate any possible node.
                         throw new BufferOverflowException();
                     }
 
-                    // Setting the type to 0 will allow iteration over each
+                    // Setting the type to 0-2 will allow iteration over each
                     // possible option for using a random node.
-                    type = 0;
-                    repeated = true;
+                    type = MathUtility.random(0, 2);
+                    repeats++;
                     break;
                 default:
                     throw new RuntimeException("Random number contains unknown value: " + type);
@@ -626,16 +627,6 @@ public class TechTree {
         if (x == 0 && y == 1) {
             throw new IllegalArgumentException("Position { x:0, y:1 } is restricted.");
         }
-    }
-
-    /**
-     * Checks if this tech tree still has any bonus nodes left.
-     *
-     * @return true if any of the bonus node amounts are at least 1.
-     */
-    private boolean hasBonusNodes() {
-        return this.defenseHealthNodes > 0 || this.troopHealthNodes > 0 || this.defenseDamageNodes > 0
-                || this.troopDmgNodes > 0 || this.gbeNodes > 0;
     }
 
     private static UpgradeNode useNodeForRandom(PresetLoader preloader, Raffle raffle) {
