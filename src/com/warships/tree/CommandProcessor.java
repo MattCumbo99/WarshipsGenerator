@@ -49,6 +49,11 @@ public final class CommandProcessor {
                 case REFRESH:
                     tree.displayNodes();
                     break;
+                case DEBUG:
+                    System.out.printf("Unused troops: %s%n", tree.getRemainingTroops());
+                    System.out.printf("Unused defenses: %s%n", tree.getRemainingDefenses());
+                    System.out.printf("Unused gunboat abilities: %s%n", tree.getRemainingGBA());
+                    break;
                 default:
                     throw new IllegalArgumentException("Instruction not accounted for: " + command);
             }
