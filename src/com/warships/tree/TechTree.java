@@ -62,7 +62,7 @@ public class TechTree {
         this.currentEngineNumber = 1;
 
         // Initialize total amount of buff nodes to use
-        this.bonusNodes = WarshipConstants.ROOM_ONE_BONUS_LIMIT;
+        this.bonusNodes = WarshipConstants.TWO_ENGINES_BONUS_LIMIT;
         this.choiceNodes = 12;
 
         // Total nodes = 75
@@ -77,20 +77,21 @@ public class TechTree {
         // Engine room 1 (Two engines)
         insertEngineRoom(WarshipConstants.TOTAL_COLUMNS_TWO_ENGINES);
 
-        this.bonusNodes = WarshipConstants.ROOM_TWO_BONUS_LIMIT;
+        this.bonusNodes = WarshipConstants.THREE_ENGINES_BONUS_LIMIT;
         // Engine room 2 (Three engines)
         insertEngineRoom(WarshipConstants.TOTAL_COLUMNS_THREE_ENGINES);
 
-        this.bonusNodes = WarshipConstants.ROOM_THREE_BONUS_LIMIT;
+        this.bonusNodes = WarshipConstants.FOUR_ENGINES_BONUS_LIMIT;
         // Engine room 3 (Four engines)
         insertEngineRoom(WarshipConstants.TOTAL_COLUMNS_FOUR_ENGINES);
 
-        this.bonusNodes = WarshipConstants.ROOM_FOUR_BONUS_LIMIT;
+        this.bonusNodes = WarshipConstants.FIVE_ENGINES_BONUS_LIMIT;
+        this.ensureNoMissing = true;
         // Engine room 4 (Five engines)
         insertEngineRoom(WarshipConstants.TOTAL_COLUMNS_FIVE_ENGINES);
 
-        this.bonusNodes = WarshipConstants.ROOM_FIVE_BONUS_LIMIT;
-        this.ensureNoMissing = true;
+        this.bonusNodes = WarshipConstants.SIX_ENGINES_BONUS_LIMIT;
+
         // Engine room 5 (Six engines)
         insertEngineRoom(WarshipConstants.TOTAL_COLUMNS_SIX_ENGINES);
         // TODO Generate the last engine room
@@ -449,7 +450,7 @@ public class TechTree {
     private TechNode randomNode() {
         boolean isNodeChoice = MathUtility.chance(WarshipConstants.CHOICE_NODE_CHANCE);
 
-        if (isNodeChoice) {
+        if ((loader.isEmpty() && this.bonusNodes == 0) || isNodeChoice) {
             // The random selection is a choice node
             this.choiceNodes--;
             return new ChoiceNode(this.defenseRaffle);
@@ -470,7 +471,7 @@ public class TechTree {
         }
 
         int type;
-        if (this.ensureNoMissing || MathUtility.chance(WarshipConstants.COMPONENT_NODE_CHANCE)) {
+        if (!loader.isEmpty() && (this.ensureNoMissing || MathUtility.chance(WarshipConstants.COMPONENT_NODE_CHANCE))) {
             // This node will be a random troop/defense/gunboat
             type = MathUtility.random(0, 2);
             if (areOptionsAvailable(type)) {
