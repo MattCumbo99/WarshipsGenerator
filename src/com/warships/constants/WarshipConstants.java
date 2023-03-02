@@ -10,6 +10,12 @@ public final class WarshipConstants {
     public static final int ENGINE_FOUR_UNLOCK_COST = 110;
     public static final int ENGINE_FIVE_UNLOCK_COST = 165;
 
+    public static final int TOTAL_COLUMNS_TWO_ENGINES = 2;
+    public static final int TOTAL_COLUMNS_THREE_ENGINES = 5;
+    public static final int TOTAL_COLUMNS_FOUR_ENGINES = 4;
+    public static final int TOTAL_COLUMNS_FIVE_ENGINES = 3;
+    public static final int TOTAL_COLUMNS_SIX_ENGINES = 3;
+
     public static final int ROOM_ONE_BONUS_LIMIT = 1;
     public static final int ROOM_TWO_BONUS_LIMIT = 3;
     public static final int ROOM_THREE_BONUS_LIMIT = 2;
@@ -17,6 +23,7 @@ public final class WarshipConstants {
     public static final int ROOM_FIVE_BONUS_LIMIT = 2;
 
     public static final double CHOICE_NODE_CHANCE = 0.30;
+    public static final double COMPONENT_NODE_CHANCE = 0.90; // Troop, defense, gunboat ability chance
 
     public static final String PRESET_FILENAME = "PresetNodes.txt";
 
