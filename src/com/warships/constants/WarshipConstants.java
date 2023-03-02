@@ -1,7 +1,5 @@
 package com.warships.constants;
 
-import com.warships.utils.MathUtility;
-
 public final class WarshipConstants {
 
     public static final int ENGINE_ONE_UNLOCK_COST = 36;
@@ -16,38 +14,92 @@ public final class WarshipConstants {
     public static final int TOTAL_COLUMNS_FIVE_ENGINES = 3;
     public static final int TOTAL_COLUMNS_SIX_ENGINES = 3;
 
-    public static final int ROOM_ONE_BONUS_LIMIT = 1;
-    public static final int ROOM_TWO_BONUS_LIMIT = 3;
-    public static final int ROOM_THREE_BONUS_LIMIT = 2;
-    public static final int ROOM_FOUR_BONUS_LIMIT = 2;
-    public static final int ROOM_FIVE_BONUS_LIMIT = 2;
+    /**
+     * Maximum number of allowed bonus nodes for two engines.
+     */
+    public static final int TWO_ENGINES_BONUS_LIMIT = 1;
 
+    /**
+     * Maximum number of allowed bonus nodes for three engines.
+     */
+    public static final int THREE_ENGINES_BONUS_LIMIT = 3;
+
+    /**
+     * Maximum number of allowed bonus nodes for four engines.
+     */
+    public static final int FOUR_ENGINES_BONUS_LIMIT = 2;
+
+    /**
+     * Maximum number of allowed bonus nodes for five engines.
+     */
+    public static final int FIVE_ENGINES_BONUS_LIMIT = 2;
+
+    /**
+     * Maximum number of allowed bonus nodes for six engines.
+     */
+    public static final int SIX_ENGINES_BONUS_LIMIT = 2;
+
+    /**
+     * Percent chance that a node will be generated as a choice node.
+     */
     public static final double CHOICE_NODE_CHANCE = 0.30;
-    public static final double COMPONENT_NODE_CHANCE = 0.90; // Troop, defense, gunboat ability chance
+
+    /**
+     * Percent chance that a node will generate a base game component node.
+     */
+    public static final double COMPONENT_NODE_CHANCE = 0.90;
 
     public static final String PRESET_FILENAME = "PresetNodes.txt";
 
+    /**
+     * Minimum allowed width for the name of a node. Any name that does not
+     * meet the length requirement will append {@link #NODE_BLANK} characters
+     * until the demand is met. Node names that exceed this name limit will
+     * cut off text that exceed the length.
+     */
     public static final int NODE_NAME_MIN_WIDTH = 20;
 
-    public static final String NODE_BLANK = "━";
+    /**
+     * Character to use when ensuring a fixed width for each displayed node.
+     */
+    public static final Character NODE_BLANK = '━';
+
+    /**
+     * Text to use when representing a node that cannot be unlocked.
+     */
     public static final String NODE_LOCK = "[Locked]";
-    public static final String NODE_UPGRADE_ICON = "↑";
+
+    /**
+     * Character to use when representing an upgradeable node.
+     */
+    public static final Character NODE_UPGRADE_ICON = '↑';
+
+    /**
+     * Text to use when displaying an unlockable node.
+     */
     public static final String NODE_UNLOCK = "«Unlock:%s »";
 
+    /**
+     * Text to use when displaying a choice node.
+     */
     public static final String NODE_CHOICE = "*CHOICE*";
 
-    public static final String BLANK_SPACE = " ";
+    /**
+     * Character to use for representing unoccupied space when displaying the tree.
+     */
+    public static final Character BLANK_SPACE = ' ';
 
-    public static final String HORIZONTAL_CONNECTOR = "=";
+    /**
+     * Character to use for creating horizontal connections.
+     */
+    public static final Character HORIZONTAL_CONNECTOR = '=';
     public static final int HORIZONTAL_CONNECTION_LENGTH = 5;
 
-    public static final int GBE_BONUS_AMOUNT = 3;
-    public static final int TROOP_DMG_BONUS_AMOUNT = 4;
-    public static final int TROOP_HEALTH_BONUS_AMOUNT = 4;
-    public static final int DEFENSE_DMG_BONUS_AMOUNT = 4;
-    public static final int DEFENSE_HEALTH_BONUS_AMOUNT = 4;
-
-    public static final String VERTICAL_CONNECTOR = "| |"; // │⇅│
+    /**
+     * Text that represents a connection between nodes on different levels.
+     * Must be a length of 3.
+     */
+    public static final String VERTICAL_CONNECTOR = "| |";
 
     private WarshipConstants() {
         throw new IllegalStateException("Cannot instantiate constants class.");

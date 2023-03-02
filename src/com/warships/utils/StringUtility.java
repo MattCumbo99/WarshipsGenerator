@@ -12,6 +12,10 @@ public final class StringUtility {
         return result;
     }
 
+    public static String repeat(Character ch, int amount) {
+        return repeat(String.valueOf(ch), amount);
+    }
+
     public static boolean isNotBlank(String string) {
         return string != null && !string.isBlank();
     }
