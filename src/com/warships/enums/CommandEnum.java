@@ -11,6 +11,7 @@ public enum CommandEnum {
     UPGRADE("Upgrades a node to the next level."),
     HELP("Displays information about a command."),
     REFRESH("Refreshes and displays the tree."),
+    DEBUG("Shows debugging information about the tech tree."),
     EXIT("Exits the program.");
 
     private static final Map<String, CommandEnum> valueMap = new HashMap<>();

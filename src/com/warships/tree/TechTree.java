@@ -1,9 +1,10 @@
 package com.warships.tree;
 
-import java.awt.*;
+import java.awt.Point;
 import java.io.File;
 import java.nio.BufferOverflowException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.warships.constants.ConnectionConstants;
@@ -44,12 +45,15 @@ public class TechTree {
     private int lastMidX;
     private int lastBotX;
 
+    private boolean ensureNoMissing;
+
     /**
      * Initializes a Warships tech tree with required nodes.
      */
     public TechTree() {
         this.tree = new HashMap<>();
         this.loader = new PresetLoader(new File(WarshipConstants.PRESET_FILENAME));
+        this.ensureNoMissing = false;
 
         this.gbeRaffle = new GunboatRaffle();
         this.troopRaffle = new TroopRaffle();
@@ -71,24 +75,37 @@ public class TechTree {
      */
     public void generate() {
         // Engine room 1 (Two engines)
-        insertEngineRoom(2);
+        insertEngineRoom(WarshipConstants.TOTAL_COLUMNS_TWO_ENGINES);
 
         this.bonusNodes = WarshipConstants.ROOM_TWO_BONUS_LIMIT;
         // Engine room 2 (Three engines)
-        insertEngineRoom(5);
+        insertEngineRoom(WarshipConstants.TOTAL_COLUMNS_THREE_ENGINES);
 
         this.bonusNodes = WarshipConstants.ROOM_THREE_BONUS_LIMIT;
         // Engine room 3 (Four engines)
-        insertEngineRoom(3);
+        insertEngineRoom(WarshipConstants.TOTAL_COLUMNS_FOUR_ENGINES);
 
         this.bonusNodes = WarshipConstants.ROOM_FOUR_BONUS_LIMIT;
         // Engine room 4 (Five engines)
-        insertEngineRoom(4);
+        insertEngineRoom(WarshipConstants.TOTAL_COLUMNS_FIVE_ENGINES);
 
         this.bonusNodes = WarshipConstants.ROOM_FIVE_BONUS_LIMIT;
+        this.ensureNoMissing = true;
         // Engine room 5 (Six engines)
-        insertEngineRoom(2);
+        insertEngineRoom(WarshipConstants.TOTAL_COLUMNS_SIX_ENGINES);
         // TODO Generate the last engine room
+    }
+
+    public List<String> getRemainingTroops() {
+        return this.troopRaffle.tickets();
+    }
+
+    public List<String> getRemainingDefenses() {
+        return this.defenseRaffle.tickets();
+    }
+
+    public List<String> getRemainingGBA() {
+        return this.gbeRaffle.tickets();
     }
 
     /**
@@ -452,7 +469,19 @@ public class TechTree {
             return null;
         }
 
-        int type = MathUtility.random(0, 7);
+        int type;
+        if (this.ensureNoMissing || MathUtility.chance(WarshipConstants.COMPONENT_NODE_CHANCE)) {
+            // This node will be a random troop/defense/gunboat
+            type = MathUtility.random(0, 2);
+            if (areOptionsAvailable(type)) {
+                // Pull from the troop raffle
+                type = 0;
+            }
+        } else {
+            // Random bonus node
+            type = MathUtility.random(3, 7);
+        }
+
         int repeats = 0;
 
         while (true) {
@@ -538,6 +567,11 @@ public class TechTree {
                     throw new RuntimeException("Random number contains unknown value: " + type);
             }
         }
+    }
+
+    private boolean areOptionsAvailable(int option) {
+        return (option == 1 && (this.defenseRaffle.isEmpty() && this.gbeRaffle.isEmpty()))
+                || (option == 2 && this.gbeRaffle.isEmpty());
     }
 
     /**
